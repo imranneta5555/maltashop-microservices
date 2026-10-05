@@ -2,7 +2,8 @@ name: CI
 
 # Runs on every push and pull request to main. Images are built ONCE per commit, tagged
 # with the commit SHA, and the integration stage tests those exact images
-# ("build once, promote everywhere").
+# ("build once, promote everywhere"). Actions are pinned to a full commit SHA (the comment
+# gives the version) so a moved or hijacked tag cannot change what runs in the pipeline.
 on:
   push:
     branches: [main]
@@ -19,7 +20,7 @@ env:
 jobs:
   test:
     name: "Stage 1: lint, unit and contract tests (${{ matrix.service }})"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         service: [order-service, notification-service]
@@ -28,10 +29,10 @@ jobs:
         working-directory: ${{ matrix.service }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: "3.12"
           cache: pip
@@ -49,7 +50,7 @@ jobs:
   build:
     name: "Stage 2: build and push image (${{ matrix.service }})"
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -58,17 +59,17 @@ jobs:
         service: [order-service, notification-service]
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f  # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build once, tag with the commit SHA, push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
         with:
           context: ${{ matrix.service }}
           push: true
@@ -77,16 +78,16 @@ jobs:
   integration:
     name: "Stage 3: integration test of the built images"
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: read
     steps:
       - name: Check out repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f  # v4.6.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
