@@ -1,0 +1,110 @@
+name: CI
+
+# Runs on every push and pull request to main. Images are built ONCE per commit, tagged
+# with the commit SHA, and the integration stage tests those exact images
+# ("build once, promote everywhere").
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  test:
+    name: "Stage 1: lint, unit and contract tests (${{ matrix.service }})"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [order-service, notification-service]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: ${{ matrix.service }}/requirements*.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Lint (gate)
+        run: ruff check app tests
+
+      - name: Unit and contract tests (gate)
+        run: pytest -v
+
+  build:
+    name: "Stage 2: build and push image (${{ matrix.service }})"
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        service: [order-service, notification-service]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build once, tag with the commit SHA, push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.service }}
+          push: true
+          tags: ${{ env.IMAGE_REGISTRY }}/maltashop-${{ matrix.service }}:${{ env.IMAGE_TAG }}
+
+  integration:
+    name: "Stage 3: integration test of the built images"
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull the images built in stage 2 (no rebuild)
+        run: docker compose pull order-service notification-service
+
+      - name: Start the whole system and wait until every container is healthy
+        run: docker compose up -d --no-build --wait
+
+      - name: Smoke test the place-order flow (gate)
+        run: python3 scripts/smoke_test.py
+
+      - name: Show service logs
+        if: always()
+        run: docker compose logs order-service notification-service
+
+      - name: Stop the system
+        if: always()
+        run: docker compose down -v
