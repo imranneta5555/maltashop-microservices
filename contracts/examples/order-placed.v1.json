@@ -1,0 +1,19 @@
+{
+  "event_id": "6f1c9a52-0d5e-4d43-9a43-0c2b4f6a8e11",
+  "event_type": "OrderPlaced",
+  "event_version": 1,
+  "occurred_at": "2026-10-05T09:15:02.481Z",
+  "source": "order-service",
+  "correlation_id": "0b8f3c1e-2a4d-4f7b-9c6e-1d2e3f4a5b6c",
+  "data": {
+    "order_id": "1b7e2c3a-9a51-4a3e-8f0e-5d2f6c7b8a90",
+    "customer_id": "C-1001",
+    "status": "PENDING",
+    "total_amount": "628.98",
+    "currency": "EUR",
+    "items": [
+      { "sku": "TV-55-4K", "quantity": 1, "unit_price": "549.00" },
+      { "sku": "KETTLE-1.7L", "quantity": 2, "unit_price": "39.99" }
+    ]
+  }
+}
