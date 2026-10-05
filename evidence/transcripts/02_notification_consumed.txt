@@ -1,0 +1,14 @@
+$ curl -s 'http://localhost:8002/notifications?order_id=5e3825aa-5dfa-47ae-82b6-61a9e2fed348' | python3 -m json.tool
+[
+    {
+        "event_id": "a529cefa-43b3-41fc-bc07-0b322afe94e3",
+        "order_id": "5e3825aa-5dfa-47ae-82b6-61a9e2fed348",
+        "customer_id": "C-1001",
+        "channel": "email",
+        "template": "order-confirmation",
+        "summary": "Order 5e3825aa received: 2 item(s), 628.98 EUR",
+        "status": "SENT",
+        "correlation_id": "8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd",
+        "created_at": "2026-10-05T04:28:59.558000Z"
+    }
+]

@@ -1,0 +1,11 @@
+$ docker compose stop notification-service
+ Container maltashop-notification-service-1 Stopping 
+ Container maltashop-notification-service-1 Stopped 
+
+$ curl -s -o /dev/null -w 'HTTP %{http_code}\n' -X POST http://localhost:8001/orders -H 'Content-Type: application/json' -H 'Idempotency-Key: outage-test-0001' -d '{"customer_id": "C-1001", "items": [{"sku": "TV-55-4K", "quantity": 1}, {"sku": "KETTLE-1.7L", "quantity": 2}]}'
+HTTP 201
+
+$ sleep 3; docker compose exec -T rabbitmq rabbitmqctl list_queues --quiet name messages_ready | column -t
+name                                   messages_ready
+notification-service.order-placed.dlq  0
+notification-service.order-placed      1

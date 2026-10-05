@@ -1,0 +1,7 @@
+$ curl -s -i -X POST http://localhost:8001/orders -H 'Content-Type: application/json' -H 'Idempotency-Key: checkout-2026-10-05-0001' -d '{"customer_id": "C-1001", "items": [{"sku": "TV-55-4K", "quantity": 1}, {"sku": "KETTLE-1.7L", "quantity": 2}]}' | grep -E -i '^HTTP|^idempotent|order_id' | cut -c1-120
+HTTP/1.1 200 OK
+idempotent-replayed: true
+{"order_id":"5e3825aa-5dfa-47ae-82b6-61a9e2fed348","customer_id":"C-1001","status":"PENDING","total_amount":"628.98","cu
+
+$ curl -s 'http://localhost:8002/notifications?order_id=5e3825aa-5dfa-47ae-82b6-61a9e2fed348' | jq length
+1
