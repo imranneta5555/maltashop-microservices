@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="516" viewBox="0 0 880 516" font-family="Helvetica, Arial, sans-serif">
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#1f2328"/></marker><marker id="arrow-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#6e7781"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#b42318"/></marker><marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#9a5b00"/></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#1f5f99"/></marker></defs>
+<rect width="880" height="516" fill="white"/>
+<text x="17" y="22" font-size="13.5" text-anchor="start" fill="#6e7781" font-style="italic">Pull request (every push to a short-lived branch)</text>
+<rect x="17" y="34" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="93.0" y="56" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">1 Push</text>
+<text x="93.0" y="76.0" font-size="12.5" text-anchor="middle" fill="#1f2328">git push of a</text>
+<text x="93.0" y="91.5" font-size="12.5" text-anchor="middle" fill="#1f2328">feature branch,</text>
+<text x="93.0" y="107.0" font-size="12.5" text-anchor="middle" fill="#1f2328">pull request opened</text>
+<line x1="17" y1="134" x2="169" y2="134" stroke="#b42318" stroke-width="1.0"/>
+<text x="93.0" y="153" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: no secrets</text>
+<line x1="170" y1="98.0" x2="186" y2="98.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="187" y="34" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="263.0" y="56" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">2 Fast checks</text>
+<text x="263.0" y="76.0" font-size="12.5" text-anchor="middle" fill="#1f2328">lint (ruff) and</text>
+<text x="263.0" y="91.5" font-size="12.5" text-anchor="middle" fill="#1f2328">unit tests</text>
+<line x1="187" y1="134" x2="339" y2="134" stroke="#b42318" stroke-width="1.0"/>
+<text x="263.0" y="153" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: all pass</text>
+<rect x="309" y="25" width="40" height="18" rx="9" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.1"/>
+<text x="329" y="38.5" font-size="11" text-anchor="middle" fill="#1f5f99" font-weight="bold">CI ✓</text>
+<line x1="340" y1="98.0" x2="356" y2="98.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="357" y="34" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="433.0" y="56" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">3 Contract tests</text>
+<text x="433.0" y="76.0" font-size="12.5" text-anchor="middle" fill="#1f2328">Order vs Notification</text>
+<text x="433.0" y="91.5" font-size="12.5" text-anchor="middle" fill="#1f2328">and Payment</text>
+<text x="433.0" y="107.0" font-size="12.5" text-anchor="middle" fill="#1f2328">(Pact / schema)</text>
+<line x1="357" y1="134" x2="509" y2="134" stroke="#b42318" stroke-width="1.0"/>
+<text x="433.0" y="153" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: can-i-deploy</text>
+<rect x="479" y="25" width="40" height="18" rx="9" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.1"/>
+<text x="499" y="38.5" font-size="11" text-anchor="middle" fill="#1f5f99" font-weight="bold">CI ✓</text>
+<line x1="510" y1="98.0" x2="526" y2="98.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="527" y="34" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="603.0" y="56" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">4 Code review</text>
+<text x="603.0" y="76.0" font-size="12.5" text-anchor="middle" fill="#1f2328">owning team</text>
+<text x="603.0" y="91.5" font-size="12.5" text-anchor="middle" fill="#1f2328">(CODEOWNERS)</text>
+<line x1="527" y1="134" x2="679" y2="134" stroke="#b42318" stroke-width="1.0"/>
+<text x="603.0" y="153" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: 1 approval</text>
+<line x1="680" y1="98.0" x2="696" y2="98.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="697" y="34" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="773.0" y="56" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">5 Merge</text>
+<text x="773.0" y="76.0" font-size="12.5" text-anchor="middle" fill="#1f2328">squash merge</text>
+<text x="773.0" y="91.5" font-size="12.5" text-anchor="middle" fill="#1f2328">into main</text>
+<line x1="697" y1="134" x2="849" y2="134" stroke="#b42318" stroke-width="1.0"/>
+<text x="773.0" y="153" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: up to date</text>
+<text x="863" y="240" font-size="13.5" text-anchor="end" fill="#6e7781" font-style="italic">Main branch (every merge)</text>
+<rect x="17" y="252" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="93.0" y="274" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">6 Build once</text>
+<text x="93.0" y="294.0" font-size="12.5" text-anchor="middle" fill="#1f2328">image tagged with</text>
+<text x="93.0" y="309.5" font-size="12.5" text-anchor="middle" fill="#1f2328">commit SHA, scanned,</text>
+<text x="93.0" y="325.0" font-size="12.5" text-anchor="middle" fill="#1f2328">pushed to registry</text>
+<line x1="17" y1="352" x2="169" y2="352" stroke="#b42318" stroke-width="1.0"/>
+<text x="93.0" y="371" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: no critical CVE</text>
+<rect x="139" y="243" width="40" height="18" rx="9" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.1"/>
+<text x="159" y="256.5" font-size="11" text-anchor="middle" fill="#1f5f99" font-weight="bold">CI ✓</text>
+<line x1="170" y1="316.0" x2="186" y2="316.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="187" y="252" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="263.0" y="274" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">7 Staging</text>
+<text x="263.0" y="294.0" font-size="12.5" text-anchor="middle" fill="#1f2328">Argo CD deploys</text>
+<text x="263.0" y="309.5" font-size="12.5" text-anchor="middle" fill="#1f2328">the same image</text>
+<text x="263.0" y="325.0" font-size="12.5" text-anchor="middle" fill="#1f2328">digest</text>
+<line x1="187" y1="352" x2="339" y2="352" stroke="#b42318" stroke-width="1.0"/>
+<text x="263.0" y="371" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: pods ready</text>
+<line x1="340" y1="316.0" x2="356" y2="316.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="357" y="252" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="433.0" y="274" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">8 Staging tests</text>
+<text x="433.0" y="294.0" font-size="12.5" text-anchor="middle" fill="#1f2328">integration and</text>
+<text x="433.0" y="309.5" font-size="12.5" text-anchor="middle" fill="#1f2328">smoke tests; k6</text>
+<text x="433.0" y="325.0" font-size="12.5" text-anchor="middle" fill="#1f2328">load test weekly</text>
+<line x1="357" y1="352" x2="509" y2="352" stroke="#b42318" stroke-width="1.0"/>
+<text x="433.0" y="371" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: all pass</text>
+<rect x="479" y="243" width="40" height="18" rx="9" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.1"/>
+<text x="499" y="256.5" font-size="11" text-anchor="middle" fill="#1f5f99" font-weight="bold">CI ✓</text>
+<line x1="510" y1="316.0" x2="526" y2="316.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="527" y="252" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="603.0" y="274" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">9 Approve</text>
+<text x="603.0" y="294.0" font-size="12.5" text-anchor="middle" fill="#1f2328">one click by the</text>
+<text x="603.0" y="309.5" font-size="12.5" text-anchor="middle" fill="#1f2328">release owner</text>
+<text x="603.0" y="325.0" font-size="12.5" text-anchor="middle" fill="#1f2328">(continuous delivery)</text>
+<line x1="527" y1="352" x2="679" y2="352" stroke="#b42318" stroke-width="1.0"/>
+<text x="603.0" y="371" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: approved</text>
+<line x1="680" y1="316.0" x2="696" y2="316.0" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="697" y="252" width="152" height="128" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="773.0" y="274" font-size="14.5" text-anchor="middle" fill="#1f2328" font-weight="bold">10 Canary</text>
+<text x="773.0" y="294.0" font-size="12.5" text-anchor="middle" fill="#1f2328">production 10%</text>
+<text x="773.0" y="309.5" font-size="12.5" text-anchor="middle" fill="#1f2328">then 50%, 100%</text>
+<text x="773.0" y="325.0" font-size="12.5" text-anchor="middle" fill="#1f2328">(Argo Rollouts)</text>
+<line x1="697" y1="352" x2="849" y2="352" stroke="#b42318" stroke-width="1.0"/>
+<text x="773.0" y="371" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">Gate: SLO metrics OK</text>
+<polyline points="773.0,162 773.0,205 93.0,205 93.0,250" fill="none" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<polyline points="773.0,380 773.0,412 263.0,412" fill="none" stroke="#b42318" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-accent)"/>
+<text x="508.0" y="405" font-size="12.5" text-anchor="middle" fill="#b42318" font-weight="bold">gate fails: automatic rollback to the previous image digest, team alerted</text>
+<rect x="17" y="428" width="832" height="46" rx="7" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.2"/>
+<text x="440" y="447" font-size="13" text-anchor="middle" fill="#1f5f99" font-weight="bold">Build once, promote everywhere: one image, ghcr.io/…/maltashop-order-service@sha256:…,</text>
+<text x="440" y="465" font-size="13" text-anchor="middle" fill="#1f5f99">moves from stage 6 to production unchanged; only environment variables and secrets differ.</text>
+<rect x="17" y="486" width="40" height="18" rx="9" fill="#e8f1fa" stroke="#1f5f99" stroke-width="1.1"/>
+<text x="37" y="499.5" font-size="11" text-anchor="middle" fill="#1f5f99" font-weight="bold">CI ✓</text>
+<text x="67" y="500" font-size="12.5" text-anchor="start" fill="#1f5f99">stage implemented in the prototype's .github/workflows/ci.yml (stage 8 runs on the CI runner)</text>
+</svg>

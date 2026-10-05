@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="700" viewBox="0 0 880 700" font-family="Helvetica, Arial, sans-serif">
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#1f2328"/></marker><marker id="arrow-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#6e7781"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#b42318"/></marker><marker id="arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#9a5b00"/></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#1f5f99"/></marker></defs>
+<rect width="880" height="700" fill="white"/>
+<rect x="30" y="12" width="180" height="54" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="120.0" y="35.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Web storefront</text>
+<text x="120.0" y="54.5" font-size="13.5" text-anchor="middle" fill="#1f2328">browser</text>
+<line x1="120" y1="66" x2="120" y2="106" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="240" y="12" width="180" height="54" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="330.0" y="35.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Mobile app</text>
+<text x="330.0" y="54.5" font-size="13.5" text-anchor="middle" fill="#1f2328">iOS and Android</text>
+<line x1="330" y1="66" x2="330" y2="106" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="450" y="12" width="180" height="54" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="540.0" y="35.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Partner systems</text>
+<text x="540.0" y="54.5" font-size="13.5" text-anchor="middle" fill="#1f2328">30 retailers, courier</text>
+<line x1="540" y1="66" x2="540" y2="106" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="30" y="108" width="610" height="64" rx="7" fill="#f3f5f7" stroke="#1f2328" stroke-width="1.4"/>
+<text x="335.0" y="136.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">API gateway (Kong)</text>
+<text x="335.0" y="155.5" font-size="13.5" text-anchor="middle" fill="#1f2328">HTTPS, checks every token, per-partner scopes and rate limits, routing</text>
+<rect x="672" y="100" width="190" height="80" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="767.0" y="121" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Identity provider</text>
+<text x="767.0" y="140" font-size="12.5" text-anchor="middle" fill="#1f2328">Keycloak: OIDC for</text>
+<text x="767.0" y="157" font-size="12.5" text-anchor="middle" fill="#1f2328">customers, OAuth 2.0</text>
+<text x="767.0" y="174" font-size="12.5" text-anchor="middle" fill="#1f2328">for partners</text>
+<line x1="642" y1="140" x2="670" y2="140" stroke="#6e7781" stroke-width="1.5" stroke-dasharray="6 4" marker-start="url(#arrow-grey)" marker-end="url(#arrow-grey)"/>
+<rect x="12" y="194" width="856" height="410" rx="10" fill="none" stroke="#6e7781" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="26" y="214" font-size="13" text-anchor="start" fill="#6e7781" font-style="italic">Kubernetes cluster (managed, EU region)</text>
+<line x1="335" y1="172" x2="335" y2="228" stroke="#1f2328" stroke-width="1.2"/>
+<line x1="110" y1="228" x2="770" y2="228" stroke="#1f2328" stroke-width="1.2"/>
+<line x1="110" y1="228" x2="110" y2="250" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="33" y="252" width="154" height="98" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="110.0" y="274" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Catalogue</text>
+<line x1="33" y1="284" x2="187" y2="284" stroke="#1f2328" stroke-width="1.0"/>
+<path d="M43,296 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="52.0" cy="296" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="69" y="306" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<text x="69" y="322" font-size="13" text-anchor="start" fill="#1f2328">+ Redis cache</text>
+<line x1="275" y1="228" x2="275" y2="250" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="198" y="252" width="154" height="98" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="275.0" y="274" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Customer</text>
+<line x1="198" y1="284" x2="352" y2="284" stroke="#1f2328" stroke-width="1.0"/>
+<path d="M208,296 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="217.0" cy="296" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="234" y="306" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<text x="234" y="322" font-size="13" text-anchor="start" fill="#1f2328">(PII encrypted)</text>
+<line x1="440" y1="228" x2="440" y2="250" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="363" y="252" width="154" height="98" rx="7" fill="#ffffff" stroke="#b42318" stroke-width="2.0"/>
+<text x="440.0" y="274" font-size="15" text-anchor="middle" fill="#b42318" font-weight="bold">Order</text>
+<line x1="363" y1="284" x2="517" y2="284" stroke="#b42318" stroke-width="1.0"/>
+<path d="M373,296 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="382.0" cy="296" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="399" y="306" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<line x1="605" y1="228" x2="605" y2="250" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="528" y="252" width="154" height="98" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="605.0" y="274" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Partner</text>
+<line x1="528" y1="284" x2="682" y2="284" stroke="#1f2328" stroke-width="1.0"/>
+<path d="M538,296 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="547.0" cy="296" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="564" y="306" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<line x1="770" y1="228" x2="770" y2="250" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<rect x="693" y="252" width="154" height="98" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="770.0" y="274" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Recommendation</text>
+<text x="770.0" y="290" font-size="12.5" text-anchor="middle" fill="#6e7781" font-style="italic">AI model, Python</text>
+<line x1="693" y1="298" x2="847" y2="298" stroke="#1f2328" stroke-width="1.0"/>
+<path d="M703,310 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="712.0" cy="310" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="729" y="320" font-size="13" text-anchor="start" fill="#1f2328">Redis + object</text>
+<text x="729" y="336" font-size="13" text-anchor="start" fill="#1f2328">storage</text>
+<rect x="30" y="398" width="820" height="50" rx="7" fill="#fdf3e1" stroke="#9a5b00" stroke-width="1.6"/>
+<text x="440" y="419" font-size="15" text-anchor="middle" fill="#9a5b00" font-weight="bold">RabbitMQ message broker: topic exchange maltashop.events</text>
+<text x="440" y="438" font-size="12.5" text-anchor="middle" fill="#9a5b00">OrderPlaced, StockReserved, PaymentAuthorised, PaymentFailed, ProductViewed, StockUpdated, CustomerErased</text>
+<line x1="110" y1="351" x2="110" y2="396" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+<line x1="275" y1="351" x2="275" y2="396" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+<line x1="440" y1="351" x2="440" y2="396" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-start="url(#arrow-amber)" marker-end="url(#arrow-amber)"/>
+<line x1="605" y1="351" x2="605" y2="396" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-start="url(#arrow-amber)" marker-end="url(#arrow-amber)"/>
+<line x1="770" y1="397" x2="770" y2="352" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+<rect x="113" y="488" width="154" height="80" rx="7" fill="#ffffff" stroke="#b42318" stroke-width="2.0"/>
+<text x="190.0" y="510" font-size="15" text-anchor="middle" fill="#b42318" font-weight="bold">Inventory</text>
+<line x1="113" y1="520" x2="267" y2="520" stroke="#b42318" stroke-width="1.0"/>
+<path d="M123,532 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="132.0" cy="532" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="149" y="542" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<line x1="190" y1="450" x2="190" y2="486" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-start="url(#arrow-amber)" marker-end="url(#arrow-amber)"/>
+<rect x="363" y="488" width="154" height="80" rx="7" fill="#ffffff" stroke="#b42318" stroke-width="2.0"/>
+<text x="440.0" y="510" font-size="15" text-anchor="middle" fill="#b42318" font-weight="bold">Payment</text>
+<line x1="363" y1="520" x2="517" y2="520" stroke="#b42318" stroke-width="1.0"/>
+<path d="M373,532 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="382.0" cy="532" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="399" y="542" font-size="13" text-anchor="start" fill="#1f2328">PostgreSQL</text>
+<line x1="440" y1="450" x2="440" y2="486" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-start="url(#arrow-amber)" marker-end="url(#arrow-amber)"/>
+<rect x="613" y="488" width="154" height="80" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4"/>
+<text x="690.0" y="510" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Notification</text>
+<line x1="613" y1="520" x2="767" y2="520" stroke="#1f2328" stroke-width="1.0"/>
+<path d="M623,532 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="632.0" cy="532" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="649" y="542" font-size="13" text-anchor="start" fill="#1f2328">MongoDB</text>
+<line x1="690" y1="450" x2="690" y2="486" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+<rect x="350" y="626" width="180" height="56" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4" stroke-dasharray="6 4"/>
+<text x="440.0" y="650.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">Payment providers</text>
+<text x="440.0" y="669.5" font-size="13.5" text-anchor="middle" fill="#1f2328">card data stays with them</text>
+<rect x="600" y="626" width="180" height="56" rx="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.4" stroke-dasharray="6 4"/>
+<text x="690.0" y="650.5" font-size="15" text-anchor="middle" fill="#1f2328" font-weight="bold">E-mail and SMS</text>
+<text x="690.0" y="669.5" font-size="13.5" text-anchor="middle" fill="#1f2328">provider</text>
+<line x1="440" y1="568" x2="440" y2="624" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<line x1="690" y1="568" x2="690" y2="624" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<line x1="20" y1="640" x2="62" y2="640" stroke="#1f2328" stroke-width="1.5" marker-end="url(#arrow-ink)"/>
+<text x="70" y="645" font-size="12.5" text-anchor="start" fill="#1f2328">synchronous HTTPS</text>
+<line x1="20" y1="662" x2="62" y2="662" stroke="#9a5b00" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-amber)"/>
+<text x="70" y="667" font-size="12.5" text-anchor="start" fill="#1f2328">asynchronous event</text>
+<rect x="22" y="676" width="38" height="14" rx="3" fill="#ffffff" stroke="#b42318" stroke-width="2.0"/>
+<text x="70" y="688" font-size="12.5" text-anchor="start" fill="#1f2328">checkout-critical</text>
+<path d="M268,656 v14 a9.0,4 0 0 0 18,0 v-14" fill="white" stroke="#1f2328" stroke-width="1.2"/><ellipse cx="277.0" cy="656" rx="9.0" ry="4" fill="white" stroke="#1f2328" stroke-width="1.2"/>
+<text x="292" y="662" font-size="12.5" text-anchor="start" fill="#1f2328">own data</text>
+<text x="292" y="677" font-size="12.5" text-anchor="start" fill="#1f2328">store</text>
+</svg>
