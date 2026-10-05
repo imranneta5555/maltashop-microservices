@@ -30,7 +30,7 @@ assignment brief. It shows the core ideas of the proposed architecture on a lapt
                      notification-service ──▶ notification-db (MongoDB)
 ```
 
-The full design, and the reasons behind it, are in the report (Sections 2 and 6).
+The full design, and the reasons behind it, are in the report ([`out/`](out/), Sections 2 and 6).
 
 ## How to run it
 
@@ -130,6 +130,24 @@ cd notification-service && pip install -r requirements.txt -r requirements-dev.t
 | `scripts/smoke_test.py` | End-to-end test of the place-order flow |
 | `docker-compose.yml`, `.env.example` | Runs the whole system |
 | `.github/workflows/ci.yml` | The CI pipeline |
+| `docs/adr/` | Architecture Decision Records (message broker, observability stack) |
+| `diagrams/` | The script that draws the report's figures, and the rendered PNGs |
+| `evidence/` | `capture.py`, which runs the demonstration, plus its transcripts and screenshots |
+| `report/` | The report text (`content/*.md`) and the scripts that build the Word and PDF files |
+| `out/` | The finished report (PDF and Word) |
+
+## Building the report
+
+Needs Python with `python-docx`, `lxml`, `pypdf` and `playwright`, and LibreOffice (`soffice`).
+
+```bash
+python3 evidence/capture.py demo      # fresh system: screenshots and transcripts for Section 6.3
+python3 evidence/capture.py ci        # screenshot of the latest passing CI run
+diagrams/render.sh                    # draws the figures
+cd report && ./build.sh               # builds the .docx, fills in the contents page numbers, writes the PDF
+python3 audit_docx.py                 # checks the formatting rules from the brief
+python3 wordcount.py                  # assessed word count (4,000 ±10%) and the board briefing limit
+```
 
 ## Limits of the prototype
 
