@@ -1,0 +1,102 @@
+# MaltaShop prototype: start everything with `docker compose up --build`.
+# Every value can be overridden from a .env file (see .env.example); the defaults are for a laptop only.
+name: maltashop
+
+services:
+  # ---------- Order service and the database only it can reach ----------
+  order-service:
+    build: ./order-service
+    image: ${IMAGE_REGISTRY:-local}/maltashop-order-service:${IMAGE_TAG:-dev}
+    environment:
+      SERVICE_NAME: order-service
+      DATABASE_URL: postgresql://order_service:${ORDER_DB_PASSWORD:-order_dev_password}@order-db:5432/orders
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-maltashop}:${RABBITMQ_PASSWORD:-maltashop_dev_password}@rabbitmq:5672/%2F
+      EVENTS_EXCHANGE: maltashop.events
+      OUTBOX_POLL_SECONDS: "1"
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8001:8000"
+    depends_on:
+      order-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks: [order-net, events-net]
+    restart: unless-stopped
+
+  order-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: order_service
+      POSTGRES_PASSWORD: ${ORDER_DB_PASSWORD:-order_dev_password}
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_service -d orders"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks: [order-net]
+
+  # ---------- Notification service and the database only it can reach ----------
+  notification-service:
+    build: ./notification-service
+    image: ${IMAGE_REGISTRY:-local}/maltashop-notification-service:${IMAGE_TAG:-dev}
+    environment:
+      SERVICE_NAME: notification-service
+      MONGO_URL: mongodb://notification_service:${NOTIFICATION_DB_PASSWORD:-notification_dev_password}@notification-db:27017/?authSource=admin
+      MONGO_DB: notifications
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-maltashop}:${RABBITMQ_PASSWORD:-maltashop_dev_password}@rabbitmq:5672/%2F
+      EVENTS_EXCHANGE: maltashop.events
+      QUEUE_NAME: notification-service.order-placed
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "8002:8000"
+    depends_on:
+      notification-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks: [notification-net, events-net]
+    restart: unless-stopped
+
+  notification-db:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: notification_service
+      MONGO_INITDB_ROOT_PASSWORD: ${NOTIFICATION_DB_PASSWORD:-notification_dev_password}
+    volumes:
+      - notification-db-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks: [notification-net]
+
+  # ---------- Message broker shared by both services ----------
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-maltashop}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-maltashop_dev_password}
+    ports:
+      - "15672:15672"   # management UI: http://localhost:15672
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    networks: [events-net]
+
+# Separate networks: each service can reach its own database and the broker, but not the
+# other service's database. "Database per service" is enforced, not just agreed.
+networks:
+  order-net:
+  notification-net:
+  events-net:
+
+volumes:
+  order-db-data:
+  notification-db-data:

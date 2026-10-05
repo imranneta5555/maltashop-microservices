@@ -4,7 +4,7 @@ from pymongo.errors import DuplicateKeyError
 
 from . import config
 
-_client = MongoClient(config.MONGO_URL, serverSelectionTimeoutMS=3000)
+_client = MongoClient(config.MONGO_URL, serverSelectionTimeoutMS=3000, tz_aware=True)
 _notifications = _client[config.MONGO_DB]["notifications"]
 
 
