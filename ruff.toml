@@ -1,0 +1,9 @@
+# Shared lint settings for both services (run in CI: `ruff check app tests`).
+line-length = 110
+target-version = "py312"
+
+[lint]
+select = ["E", "F", "W", "I", "B"]
+
+[lint.isort]
+known-first-party = ["app"]
