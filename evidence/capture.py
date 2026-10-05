@@ -31,7 +31,7 @@ body {{ margin: 0; padding: 18px; background: #ffffff; }}
 .bar {{ height: 30px; background: #2d2f33; display: flex; align-items: center; padding: 0 12px; }}
 .dot {{ width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }}
 .title {{ color: #a9adb3; font: 13px -apple-system, Helvetica, sans-serif; margin-left: 10px; }}
-pre {{ margin: 0; padding: 14px 16px 16px; color: #e3e5e8; font: 13.5px/1.45 Menlo, monospace;
+pre {{ margin: 0; padding: 14px 16px 16px; color: #e3e5e8; font: 14px/1.45 Menlo, monospace;
        white-space: pre-wrap; word-break: break-all; }}
 .cmd {{ color: #7ee787; }} .hl {{ color: #ffd479; font-weight: bold; }}
 </style></head><body><div class="window"><div class="bar">
@@ -54,7 +54,7 @@ class Terminal:
         self.browser = browser
 
     def capture(self, name: str, title: str, commands: list[str], highlight: str | None = None,
-                width: int = 1180) -> str:
+                width: int = 960) -> str:
         transcript = []
         for command in commands:
             transcript.append(f"$ {command}")
@@ -113,7 +113,7 @@ def rabbitmq_queues(browser, name: str) -> None:
     page.wait_for_timeout(1500)
     page.goto("http://localhost:15672/#/queues")
     page.wait_for_timeout(6000)  # let the management UI poll the queue figures
-    page.screenshot(path=str(SHOTS / f"{name}.png"), clip={"x": 0, "y": 0, "width": 1280, "height": 424})
+    page.screenshot(path=str(SHOTS / f"{name}.png"), clip={"x": 20, "y": 0, "width": 822, "height": 424})
     page.close()
     print(f"  saved {name}")
 
@@ -126,7 +126,8 @@ def demo() -> None:
         browser = playwright.chromium.launch()
         term = Terminal(browser)
         term.capture("00_compose_up", "docker compose", [
-            "docker compose ps --format 'table {{.Service}}\\t{{.Image}}\\t{{.Status}}\\t{{.Ports}}'"])
+            "docker compose ps --format 'table {{.Service}}\\t{{.Image}}\\t{{.Status}}\\t{{.Ports}}'"],
+            width=1200)
 
         key = "checkout-2026-10-05-0001"
         order_id, correlation = place_order_in_swagger(browser, key)
@@ -138,13 +139,13 @@ def demo() -> None:
 
         term.capture("03_correlation_logs", "logs of both services, filtered by one correlation ID", [
             f"docker compose logs --no-log-prefix order-service notification-service | grep {correlation} "
-            "| jq -r '[.timestamp[11:23], .service, .correlation_id, .event, .message] | @tsv' "
-            "| sort | column -t -s $'\\t'"], highlight=correlation, width=1240)
+            "| jq -r '[.timestamp[11:23], .service, .correlation_id, .event] | @tsv' "
+            "| sort | column -t -s $'\\t'"], highlight=correlation)
 
         term.capture("04_idempotent_retry", "retrying the same request", [
             f"curl -s -i -X POST http://localhost:8001/orders -H 'Content-Type: application/json' "
             f"-H 'Idempotency-Key: {key}' -d '{ORDER}' | grep -E -i '^HTTP|^idempotent|order_id' "
-            "| cut -c1-120",
+            "| cut -c1-100",
             f"curl -s 'http://localhost:8002/notifications?order_id={order_id}' | jq length"])
 
         print("resilience test: notification-service stopped ...")
@@ -175,10 +176,10 @@ def ci() -> None:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page(device_scale_factor=2, viewport={"width": 1400, "height": 860})
-        page.goto(url)
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(2000)
-        page.screenshot(path=str(SHOTS / "06_ci_passing_run.png"))
+        page.goto(url, wait_until="load")
+        page.wait_for_timeout(5000)  # GitHub keeps polling, so wait for the job graph to draw
+        page.screenshot(path=str(SHOTS / "06_ci_passing_run.png"),
+                        clip={"x": 0, "y": 0, "width": 1400, "height": 690})
         browser.close()
     (EVIDENCE / "ci_run.json").write_text(json.dumps({**run, "url": url}, indent=2) + "\n")
     print(f"  saved 06_ci_passing_run ({url})")

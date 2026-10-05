@@ -1,6 +1,6 @@
-$ docker compose logs --no-log-prefix order-service notification-service | grep 8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd | jq -r '[.timestamp[11:23], .service, .correlation_id, .event, .message] | @tsv' | sort | column -t -s $'\t'
-04:28:58.666  order-service         8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd  order.placed       Order saved as PENDING; OrderPlaced queued in outbox
-04:28:58.667  order-service         8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd  http.request       POST /orders -> 201
-04:28:59.557  notification-service  8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd  event.received     Received OrderPlaced
-04:28:59.557  order-service         8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd  event.published    Published OrderPlaced to maltashop.events
-04:28:59.562  notification-service  8f2bdf1c-d1c3-479b-8ef6-2c56b6d9e4dd  notification.sent  Order confirmation recorded for customer C-1001
+$ docker compose logs --no-log-prefix order-service notification-service | grep 6f5f6be9-cd82-4658-a445-803f52709e3b | jq -r '[.timestamp[11:23], .service, .correlation_id, .event] | @tsv' | sort | column -t -s $'\t'
+04:50:34.026  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  order.placed
+04:50:34.027  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  http.request
+04:50:34.938  notification-service  6f5f6be9-cd82-4658-a445-803f52709e3b  event.received
+04:50:34.938  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  event.published
+04:50:34.944  notification-service  6f5f6be9-cd82-4658-a445-803f52709e3b  notification.sent
