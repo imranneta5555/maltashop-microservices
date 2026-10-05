@@ -11,6 +11,7 @@ from fastapi.concurrency import run_in_threadpool
 from . import db
 from .domain import PlaceOrderRequest
 from .logging_setup import correlation_id, log_event, setup_logging
+from .outbox import OutboxRelay
 
 setup_logging()
 log = logging.getLogger("order.api")
@@ -19,8 +20,11 @@ log = logging.getLogger("order.api")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await run_in_threadpool(db.create_schema)
-    log_event(log, logging.INFO, "service.started", "Order service started")
+    relay = OutboxRelay()
+    relay.start()
+    log_event(log, logging.INFO, "service.started", "Order service started; outbox relay running")
     yield
+    relay.stop()
 
 
 app = FastAPI(title="MaltaShop Order Service", version="0.1.0", lifespan=lifespan)
