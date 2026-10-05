@@ -57,8 +57,8 @@ def place_order(request: PlaceOrderRequest, idempotency_key: str, correlation_id
                VALUES (gen_random_uuid(), %s, %s, 'PENDING', %s, %s, %s, %s)
                ON CONFLICT (idempotency_key) DO NOTHING
                RETURNING *""",
-            (idempotency_key, request.customer_id, order_total(request.items), CURRENCY,
-             Jsonb(price_lines(request.items)), correlation_id),
+            (idempotency_key, request.customer_id, order_total(request.items),
+             CURRENCY, Jsonb(price_lines(request.items)), correlation_id),
         ).fetchone()
         if order is None:  # a retry of a request that was already handled
             existing = conn.execute("SELECT * FROM orders WHERE idempotency_key = %s",
@@ -67,7 +67,8 @@ def place_order(request: PlaceOrderRequest, idempotency_key: str, correlation_id
 
         event = order_placed_event(order, correlation_id)
         conn.execute(
-            "INSERT INTO outbox (event_id, event_type, routing_key, payload) VALUES (%s, %s, %s, %s)",
+            "INSERT INTO outbox (event_id, event_type, routing_key, payload) "
+            "VALUES (%s, %s, %s, %s)",
             (event["event_id"], event["event_type"], "order.placed", Jsonb(event)),
         )
         return order, True
