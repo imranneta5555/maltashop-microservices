@@ -30,6 +30,7 @@ from docx.enum.section import WD_SECTION
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.oxml import OxmlElement
+from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
@@ -440,10 +441,34 @@ def write_inline(paragraph, text: str, size: float = 12, code_size: float = 11) 
                     run._r.add_t(piece)
             set_run_font(run, CODE_FONT, code_size)
         else:
-            run = paragraph.add_run(content)
-            set_run_font(run, BODY_FONT, size)
-            run.bold = style == "bold"
-            run.italic = style == "italic"
+            # Web addresses become real, clickable hyperlinks in Word and in the PDF.
+            for index, piece in enumerate(URL.split(content)):
+                if not piece:
+                    continue
+                if index % 2:
+                    add_hyperlink(paragraph, piece, size, bold=style == "bold", italic=style == "italic")
+                else:
+                    run = paragraph.add_run(piece)
+                    set_run_font(run, BODY_FONT, size)
+                    run.bold = style == "bold"
+                    run.italic = style == "italic"
+
+
+URL = re.compile(r"(https?://[^\s)]*[^\s).,;:])")
+LINK_BLUE = RGBColor(0x05, 0x63, 0xC1)
+
+
+def add_hyperlink(paragraph, url: str, size: float, bold: bool = False, italic: bool = False) -> None:
+    relationship = paragraph.part.relate_to(url, RT.HYPERLINK, is_external=True)
+    hyperlink = OxmlElement("w:hyperlink")
+    hyperlink.set(qn("r:id"), relationship)
+    run = paragraph.add_run(url)
+    set_run_font(run, BODY_FONT, size)
+    run.bold, run.italic = bold, italic
+    run.font.color.rgb = LINK_BLUE
+    run.font.underline = True
+    hyperlink.append(run._r)  # moves the run inside the hyperlink
+    paragraph._p.append(hyperlink)
 
 
 def caption_paragraph(doc, text: str, keep_with_next: bool) -> None:
