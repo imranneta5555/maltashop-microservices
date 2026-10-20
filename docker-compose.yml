@@ -78,9 +78,12 @@ services:
   # ---------- Message broker shared by both services ----------
   rabbitmq:
     image: rabbitmq:4-management-alpine
+    hostname: rabbitmq   # a fixed node name, so the volume below is reused after re-creation
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-maltashop}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-maltashop_dev_password}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq   # queued events survive a re-created container
     ports:
       - "15672:15672"   # management UI: http://localhost:15672
     healthcheck:
@@ -100,3 +103,4 @@ networks:
 volumes:
   order-db-data:
   notification-db-data:
+  rabbitmq-data:
