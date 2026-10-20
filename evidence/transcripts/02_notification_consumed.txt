@@ -1,14 +1,14 @@
-$ curl -s 'http://localhost:8002/notifications?order_id=2b3f0e9c-cf71-43f1-8835-1962e9097b0f' | python3 -m json.tool
+$ curl -s 'http://localhost:8002/notifications?order_id=550d5ac8-9eee-418c-846f-02c2d04a1693' | python3 -m json.tool
 [
     {
-        "event_id": "05cd4948-3a6a-4c07-9603-4f75ac143549",
-        "order_id": "2b3f0e9c-cf71-43f1-8835-1962e9097b0f",
+        "event_id": "e50ba4e7-c752-49d7-8388-486140d8e42d",
+        "order_id": "550d5ac8-9eee-418c-846f-02c2d04a1693",
         "customer_id": "C-1001",
         "channel": "email",
         "template": "order-confirmation",
-        "summary": "Order 2b3f0e9c received: 2 item(s), 628.98 EUR",
+        "summary": "Order 550d5ac8 received: 2 item(s), 628.98 EUR",
         "status": "SENT",
-        "correlation_id": "6f5f6be9-cd82-4658-a445-803f52709e3b",
-        "created_at": "2026-10-05T04:50:34.939000Z"
+        "correlation_id": "29f5f829-c3f2-4517-945d-457c5e2a881f",
+        "created_at": "2026-10-20T08:00:23.812000Z"
     }
 ]

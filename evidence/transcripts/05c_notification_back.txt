@@ -1,8 +1,8 @@
 $ docker compose start notification-service
  Container maltashop-notification-db-1 Waiting 
  Container maltashop-rabbitmq-1 Waiting 
- Container maltashop-rabbitmq-1 Healthy 
  Container maltashop-notification-db-1 Healthy 
+ Container maltashop-rabbitmq-1 Healthy 
  Container maltashop-notification-service-1 Starting 
  Container maltashop-notification-service-1 Started 
 
@@ -12,5 +12,5 @@ notification-service.order-placed.dlq  0
 notification-service.order-placed      0
 
 $ curl -s http://localhost:8002/notifications | jq -r '.[] | [.order_id, .status, .summary] | @tsv'
-363192fc-c9c7-4a72-b56e-a82be1b6590f	SENT	Order 363192fc received: 2 item(s), 628.98 EUR
-2b3f0e9c-cf71-43f1-8835-1962e9097b0f	SENT	Order 2b3f0e9c received: 2 item(s), 628.98 EUR
+2ed79e73-2c37-4982-99bc-2c322778ff1f	SENT	Order 2ed79e73 received: 2 item(s), 628.98 EUR
+550d5ac8-9eee-418c-846f-02c2d04a1693	SENT	Order 550d5ac8 received: 2 item(s), 628.98 EUR

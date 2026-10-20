@@ -1,6 +1,6 @@
-$ docker compose logs --no-log-prefix order-service notification-service | grep 6f5f6be9-cd82-4658-a445-803f52709e3b | jq -r '[.timestamp[11:23], .service, .correlation_id, .event] | @tsv' | sort | column -t -s $'\t'
-04:50:34.026  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  order.placed
-04:50:34.027  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  http.request
-04:50:34.938  notification-service  6f5f6be9-cd82-4658-a445-803f52709e3b  event.received
-04:50:34.938  order-service         6f5f6be9-cd82-4658-a445-803f52709e3b  event.published
-04:50:34.944  notification-service  6f5f6be9-cd82-4658-a445-803f52709e3b  notification.sent
+$ docker compose logs --no-log-prefix order-service notification-service | grep 29f5f829-c3f2-4517-945d-457c5e2a881f | jq -r '[.timestamp[11:23], .service, .correlation_id, .event] | @tsv' | sort | column -t -s $'\t'
+08:00:22.899  order-service         29f5f829-c3f2-4517-945d-457c5e2a881f  order.placed
+08:00:22.900  order-service         29f5f829-c3f2-4517-945d-457c5e2a881f  http.request
+08:00:23.805  order-service         29f5f829-c3f2-4517-945d-457c5e2a881f  event.published
+08:00:23.809  notification-service  29f5f829-c3f2-4517-945d-457c5e2a881f  event.received
+08:00:23.843  notification-service  29f5f829-c3f2-4517-945d-457c5e2a881f  notification.sent
