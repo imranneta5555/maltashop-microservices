@@ -183,14 +183,14 @@ def pipeline():
     rows = [
         ("Pull request (every push to a short-lived branch)", 34, [
             ("1 Push", ["git push of a", "feature branch,", "pull request opened"], "no secrets", False),
-            ("2 Fast checks", ["lint (ruff) and", "unit tests"], "all pass", True),
-            ("3 Contract tests", ["Order vs Notification", "and Payment", "(Pact / schema)"], "can-i-deploy", True),
+            ("2 Fast checks", ["lint, unit and", "integration tests"], "all pass", True),
+            ("3 Contract tests", ["Order vs Notification", "and Payment", "(Pact / schema)"], "contract holds", True),
             ("4 Code review", ["owning team", "(CODEOWNERS)"], "1 approval", False),
             ("5 Merge", ["squash merge", "into main"], "up to date", False)]),
         ("Main branch (every merge)", 252, [
             ("6 Build once", ["image tagged with", "commit SHA, scanned,", "pushed to registry"], "no critical CVE", True),
-            ("7 Staging", ["Argo CD deploys", "the same image", "digest"], "pods ready", False),
-            ("8 Staging tests", ["integration and", "smoke tests; k6", "load test weekly"], "all pass", True),
+            ("7 Staging", ["Argo CD syncs the", "digest committed", "to the GitOps repo"], "pods ready", False),
+            ("8 Staging tests", ["end-to-end smoke", "tests; k6 load", "test weekly"], "all pass", True),
             ("9 Approve", ["one click by the", "release owner", "(continuous delivery)"], "approved", False),
             ("10 Canary", ["production 10%", "then 50%, 100%", "(Argo Rollouts)"], "SLO metrics OK", False)]),
     ]
@@ -216,7 +216,7 @@ def pipeline():
     b.append(polyline([(x0 + 4 * (w + gap) + w / 2, 252 + h), (x0 + 4 * (w + gap) + w / 2, 412),
                        (x0 + 1 * (w + gap) + w / 2, 412)], colour="accent", dashed=True))
     b.append(text(x0 + 2.5 * (w + gap) + w / 2 - 10, 405, "gate fails: automatic rollback to the previous "
-                  "image digest, team alerted", size=12.5, colour=ACCENT, bold=True))
+                  "digest, Git reverted, team alerted", size=12.5, colour=ACCENT, bold=True))
     # build once, promote everywhere band
     b.append(rect(x0, 428, 4 * (w + gap) + w, 46, BLUE_FILL, BLUE, 1.2))
     b.append(text(440, 447, "Build once, promote everywhere: one image, ghcr.io/…/maltashop-order-service@sha256:…,",
@@ -225,8 +225,8 @@ def pipeline():
                             "differ.", size=13, colour=BLUE))
     b.append(rect(x0, 486, 40, 18, BLUE_FILL, BLUE, 1.1, rx=9))
     b.append(text(x0 + 20, 499.5, "CI ✓", size=11, bold=True, colour=BLUE))
-    b.append(text(x0 + 50, 500, "stage implemented in the prototype's .github/workflows/ci.yml (stage 8 runs "
-                                "on the CI runner)", size=12.5, anchor="start", colour=BLUE))
+    b.append(text(x0 + 50, 500, "automated in the prototype's ci.yml (stage 2 without container-based "
+                                "integration tests; stage 8 on the CI runner)", size=12.5, anchor="start", colour=BLUE))
     return svg(880, 516, "\n".join(b))
 
 
