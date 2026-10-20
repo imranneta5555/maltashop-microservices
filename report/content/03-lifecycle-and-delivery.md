@@ -76,4 +76,4 @@ Listing 2 is the prototype's `.github/workflows/ci.yml`. Pull requests run the t
 Listing: Listing 2 — The prototype's CI workflow (.github/workflows/ci.yml)
 @file .github/workflows/ci.yml
 
-![Figure 3 — A passing run of the prototype's CI workflow on GitHub Actions. Stage 1 lints and tests both services, stage 2 builds each image once and pushes it to GitHub Container Registry, and stage 3 starts the whole system from those images and runs the smoke test.](evidence/screenshots/06_ci_passing_run.png){w=15.9}
+![Figure 3 — A passing run of the prototype's CI workflow on GitHub Actions, in 1 min 57 s: well inside a ten-minute target, because both services are tested in parallel and pip downloads are cached. Stage 1 lints and tests both services; stage 2 builds each image once, scans it with Trivy and pushes it to GitHub Container Registry; stage 3 starts the whole system from those images and runs the end-to-end smoke test.](evidence/screenshots/06_ci_passing_run.png){w=15.9}

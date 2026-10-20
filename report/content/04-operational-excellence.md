@@ -28,7 +28,7 @@ spec:
         - name: order-service
           # the exact image digest that passed the pipeline
           image: ghcr.io/imranneta5555/maltashop-order-service@sha256:...
-          envFrom:                        # settings in a ConfigMap, passwords in a Secret
+          envFrom:                        # settings: ConfigMap; passwords: Secret
             - configMapRef: {name: order-service-config}
             - secretRef: {name: order-service-secrets}
           securityContext: {runAsNonRoot: true, readOnlyRootFilesystem: true}
