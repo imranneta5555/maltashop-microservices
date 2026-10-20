@@ -1,7 +1,7 @@
 name: CI
 
-# Runs on every push and pull request to main. Images are built ONCE per commit, tagged
-# with the commit SHA, and the integration stage tests those exact images
+# Pull requests run stage 1. Every push to main also builds each image ONCE, tagged with the
+# commit SHA, scans it, pushes it, and the end-to-end stage tests those exact images
 # ("build once, promote everywhere"). Actions are pinned to a full commit SHA (the comment
 # gives the version) so a moved or hijacked tag cannot change what runs in the pipeline.
 on:
@@ -48,8 +48,9 @@ jobs:
         run: pytest -v
 
   build:
-    name: "Stage 2: build and push image (${{ matrix.service }})"
+    name: "Stage 2: build, scan and push image (${{ matrix.service }})"
     needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -57,6 +58,8 @@ jobs:
     strategy:
       matrix:
         service: [order-service, notification-service]
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/maltashop-${{ matrix.service }}:${{ github.sha }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -68,15 +71,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build once, tag with the commit SHA, push
+      - name: Build once, tagged with the commit SHA
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc  # v7.4.0
         with:
           context: ${{ matrix.service }}
-          push: true
-          tags: ${{ env.IMAGE_REGISTRY }}/maltashop-${{ matrix.service }}:${{ env.IMAGE_TAG }}
+          load: true
+          tags: ${{ env.IMAGE }}
 
-  integration:
-    name: "Stage 3: integration test of the built images"
+      - name: Scan the image; stop on any critical vulnerability that has a fix (gate)
+        run: >
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock
+          aquasec/trivy:0.76.0@sha256:2416d1f74045b57274df1a340eee6b510cacd73c66a6ccb8da092b117eb7d222
+          image --severity CRITICAL --ignore-unfixed --exit-code 1 --no-progress "$IMAGE"
+
+      - name: Push the scanned image
+        run: docker push "$IMAGE"
+
+  end-to-end:
+    name: "Stage 3: end-to-end test of the built images"
     needs: build
     runs-on: ubuntu-24.04
     permissions:
