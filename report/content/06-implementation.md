@@ -1,22 +1,14 @@
 # 6. Implementation and Prototyping
 
-The prototype implements the place-order flow: the **Order service** (FastAPI, PostgreSQL) exposes `POST /orders`, and the **Notification service** (FastAPI, MongoDB) consumes the `OrderPlaced` event through **RabbitMQ**. Each has a Dockerfile, one `docker compose up` starts everything, and the repository's README explains what it is, how to run it and its environment variables (Appendix A).
+The prototype implements the place-order flow: the **Order service** (FastAPI, PostgreSQL) exposes `POST /orders`, and the **Notification service** (FastAPI, MongoDB) consumes the `OrderPlaced` event through **RabbitMQ**. Each has a Dockerfile, one `docker compose up` starts everything, and the README explains how to run it and its environment variables (Appendix A).
 
 ## 6.1 Keeping the place-order flow consistent
 
-An order touches three databases (Order, Inventory and Payment), so one ACID transaction is impossible, and a two-phase commit would lock all three and fail whenever one is down. The flow is therefore a **saga** (Garcia-Molina and Salem, 1987; Richardson, 2018): a sequence of local transactions, each publishing an event that triggers the next, with a compensating action that undoes a step if a later one fails (Figure 5, Table 15).
+An order touches three databases (Order, Inventory and Payment), so one ACID transaction is impossible, and a two-phase commit would lock all three and fail whenever one is down. The flow is therefore a **saga** (Garcia-Molina and Salem, 1987; Richardson, 2018): a sequence of local transactions, each publishing an event that triggers the next, with a compensating action that undoes a step if a later one fails (Figure 5).
 
 I chose **choreography** rather than orchestration. With three participants and one main path, the events are easy to follow and no orchestrator service has to be built and run, while Order still records the state of every order. If the flow grows to include returns or split deliveries, an orchestrator would become easier to manage.
 
 ![Figure 5 — The place-order saga (choreography). Each service commits a local transaction and publishes an event; the red path shows the compensating actions taken when payment is declined. Only Order (steps 1–4) and Notification are built in the prototype.](diagrams/out/saga.png)
-
-Table: Table 15 — Saga steps and compensating actions
-| Step | Service | Local transaction | Compensating action |
-|---|---|---|---|
-| 1 | Order | Create order as PENDING and save OrderPlaced in the outbox | Mark the order CANCELLED |
-| 2 | Inventory | Reserve stock for the order ID | Release the reservation |
-| 3 | Payment | Authorise the payment with the provider | Void or refund the authorisation |
-| 4 | Order | Mark the order CONFIRMED | None: the final step |
 
 Three techniques make every step safe to repeat:
 
@@ -81,6 +73,8 @@ for row in rows:
         ),
         # (4) with confirm_delivery() on, this returns only once the broker
         #     has stored the message, and fails if no queue would receive it
+        #     (production adds an alternate exchange, so one such event
+        #     cannot hold up the others)
         mandatory=True,
     )
     # (5) marked as sent only after the broker's confirmation
@@ -121,13 +115,13 @@ Listing: Listing 7 — order-service/Dockerfile (the Notification service's is t
 
 The key choices in Listing 7 are:
 
-- **Base image.** `python:3.12-slim` is an official, regularly patched Debian image: small, yet compatible with the ready-built wheels of psycopg and pymongo (Alpine's musl library often forces slow source builds). In production the tag would be pinned to a digest.
-- **Multi-stage build.** The first stage installs the dependencies into a virtual environment; the final image copies only that environment and the application code (Docker, n.d.). No pip cache, build files or tests reach production, so the image is smaller and has less to attack.
-- **Non-root user.** The process runs as user 10001, so an attacker who compromised the service would not be root in the container.
-- **Health checks.** `HEALTHCHECK` calls `/health/ready`; Compose starts each service only when its database and the broker are healthy (`condition: service_healthy`), and Kubernetes will use the same endpoints for its probes.
-- **Configuration through environment variables.** Every setting has a development default in Compose and nothing environment-specific is baked into the image, which is what makes "build once, promote everywhere" possible.
+- **Base image.** `python:3.12-slim` is an official, regularly patched Debian image: small, yet compatible with the ready-built wheels of psycopg and pymongo (Alpine's musl library often forces slow source builds). Both stages pin it to a digest, so a moved tag cannot change the build.
+- **Multi-stage build.** The first stage installs the dependencies into a virtual environment; the final image copies only that environment and the application code (Docker, n.d.). No pip cache, build files or tests reach production, so the image is smaller and has less to attack. Dependencies are installed before the code is copied, so a code change reuses the cached layer, and `.dockerignore` keeps tests and `.env` files out.
+- **Non-root user.** The process runs as user 10001, so an attacker who escaped the container would not be root on the host; Kubernetes enforces this with `runAsNonRoot` (Listing 3).
+- **Health checks.** `HEALTHCHECK` calls `/health/ready`; Compose starts each service only when its database and the broker are healthy (`condition: service_healthy`), and Kubernetes uses `/health/live` and `/health/ready` as separate liveness and readiness probes (Section 4.1).
+- **Configuration through environment variables.** Every setting comes from the environment, with development values only in Compose, so no password or environment-specific value is in the image or code, which is what makes "build once, promote everywhere" possible.
 
-Listing: Listing 8 — docker-compose.yml (excerpt, passwords shortened; the full file is in Appendix B.1)
+Listing: Listing 8 — docker-compose.yml (excerpt, passwords shortened; the full file is in Appendix B)
 ```yaml
 services:
   order-service:
@@ -160,13 +154,13 @@ As Listing 8 shows, separate networks enforce database per service: the Order se
 
 ![Figure 7 — After `docker compose up -d --build --wait`, all five containers are running and healthy.](evidence/screenshots/00_compose_up.png){w=15.9}
 
-Table 16 lists the cloud-native tools needed to take the prototype from a laptop to production, and what each adds.
+Table 15 lists the cloud-native tools needed to take the prototype from a laptop to production, and what each adds.
 
-Table: Table 16 — From laptop to production
+Table: Table 15 — From laptop to production
 | Tool | What it adds |
 |---|---|
-| Container registry (GitHub Container Registry or Amazon ECR) | Stores tested images by digest; scans them for known vulnerabilities |
-| Kubernetes (Amazon EKS) | Replicas across zones, self-healing and autoscaling (Section 4.1) |
+| Container registry (Amazon ECR; GHCR in the prototype) | Stores scanned images by commit tag and digest, pulled with the cluster's identity, not a password; signing (cosign) lets the cluster admit only trusted images |
+| Kubernetes (Amazon EKS) | Compose runs on one machine; EKS adds replicas across zones, rolling updates, self-healing and autoscaling (Section 4.1) |
 | Helm charts | One parameterised deployment template per service, replacing Compose |
 | Argo CD (GitOps) | Applies what is in Git to the cluster, with an audit trail and easy rollback |
 | Argo Rollouts | Canary releases with automatic analysis and rollback (Section 3.3) |
@@ -178,7 +172,7 @@ Table: Table 16 — From laptop to production
 
 ## 6.3 Evidence and reflection
 
-Figures 8 to 14 come from one run of `evidence/capture.py` on a freshly started system.
+Figures 8 to 13 come from one run of `evidence/capture.py` on a freshly started system.
 
 ![Figure 8 — An order placed through the Order service's API documentation page (Swagger UI): the request, sent with an Idempotency-Key, and the 201 Created response with the order as PENDING, the total priced by the service, and the generated X-Correlation-ID header.](evidence/screenshots/01_swagger_place_order.png){w=13.5}
 
@@ -190,12 +184,10 @@ Figures 8 to 14 come from one run of `evidence/capture.py` on a freshly started 
 
 ![Figure 12 — Resilience test: with the Notification service stopped, an order is still accepted (HTTP 201) and its event waits in the Notification service's queue.](evidence/screenshots/05a_notification_down.png){w=15.9}
 
-![Figure 13 — The RabbitMQ management page during the test: one message ready in notification-service.order-placed, and the dead-letter queue empty.](evidence/screenshots/05b_rabbitmq_message_waiting.png){w=15.9}
+![Figure 13 — After the Notification service restarts, the waiting event is consumed: the queue is empty and both orders have a notification.](evidence/screenshots/05c_notification_back.png){w=15.9}
 
-![Figure 14 — After the Notification service restarts, the waiting event is consumed: the queue is empty and both orders have a notification.](evidence/screenshots/05c_notification_back.png){w=15.9}
+**What the prototype proves.** Two services with separate databases and networks cooperate only through a REST call and an event, which is the core of the design. Figures 12 and 13 show that the March incident cannot recur in the same form: with Notification stopped, orders were still accepted, the event waited in RabbitMQ and was processed when Notification returned. Figure 11 shows that a retried checkout creates no duplicate, and Figure 10 shows one correlation ID following an order across both services, as Section 4.2 requires. The CI pipeline tests the exact images it built.
 
-**What the prototype proves.** Two services with separate databases and networks cooperate only through a REST call and an event, which is the core of the design. Figures 12 to 14 show that the March incident cannot recur in the same form: with Notification stopped, orders were still accepted, the event waited in RabbitMQ and was processed when Notification returned. Figure 11 shows that a retried checkout creates no duplicate order or e-mail, and Figure 10 shows one correlation ID following an order across both services, which is what makes the logging design in Section 4.2 work. The CI pipeline tests the exact images it built.
-
-**Where it falls short.** It has two services, not eight: without Inventory and Payment, the saga's compensations are designed (Figure 5) but never executed. There is no gateway, authentication or tracing, only correlation IDs. The outbox is polled every second, so an event can wait up to a second before it is published (compare the order.placed and event.published times in Figure 10). Every container is a single instance, and the passwords are development defaults.
+**Where it falls short.** It has two services, not eight: without Inventory and Payment, the saga's compensations are designed (Figure 5) but never executed. There is no gateway, authentication or tracing, only correlation IDs. The outbox is polled every second, so an event can wait up to a second before it is published (Figure 10). Every container is a single instance, and the passwords are development defaults.
 
 **What I would change before production.** Add Inventory and Payment with their compensations, and test the failure paths automatically; replace polling with PostgreSQL LISTEN/NOTIFY or change-data capture; run schema changes as versioned migrations; add OpenTelemetry tracing, the gateway and Keycloak; move secrets into a secrets manager; and run the load test at ten times normal traffic on Kubernetes before the first sale.

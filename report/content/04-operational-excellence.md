@@ -4,7 +4,7 @@
 
 Kubernetes keeps checkout reliable by constantly making the cluster match a declared state (Burns *et al.*, 2022). Order, Payment and Inventory each run as a **Deployment**, which manages a **ReplicaSet**: if a pod crashes or its node fails, the ReplicaSet starts a replacement. Pods are spread across three availability zones, so losing a zone leaves two-thirds of the capacity.
 
-**Probes** decide which pods receive traffic (Kubernetes, n.d.a). The readiness probe calls `/health/ready`, which checks the database; a pod that is starting, overloaded or cut off is removed from the load balancer instead of returning errors. The liveness probe calls `/health/live` and restarts a pod that hangs. **Resource requests** reserve CPU and memory so the scheduler only places pods where they fit, and **limits** cap each pod: the March memory leak would now restart one Notification pod, not take down checkout.
+**Probes** decide which pods receive traffic (Kubernetes, n.d.a). The readiness probe calls `/health/ready`, which checks the database; a pod that is starting, overloaded or cut off is removed from the Service instead of returning errors. The liveness probe calls `/health/live`, which checks nothing else, and restarts only a pod that hangs. **Resource requests** reserve CPU and memory so the scheduler only places pods where they fit, and **limits** cap each pod: the March memory leak would now restart one Notification pod, not take down checkout.
 
 For the peak, the **Horizontal Pod Autoscaler** adds Order replicas when average CPU use passes 60%, from 3 up to 30 (Kubernetes, n.d.b), and the cluster autoscaler adds nodes when pods do not fit. Because autoscaling takes minutes, the minimum is raised before a planned sale, after a k6 test at ten times normal traffic on staging. Listing 3 shows these settings for the Order service.
 
@@ -28,7 +28,10 @@ spec:
         - name: order-service
           # the exact image digest that passed the pipeline
           image: ghcr.io/imranneta5555/maltashop-order-service@sha256:...
-          envFrom: [{secretRef: {name: order-service-config}}]
+          envFrom:                        # settings in a ConfigMap, passwords in a Secret
+            - configMapRef: {name: order-service-config}
+            - secretRef: {name: order-service-secrets}
+          securityContext: {runAsNonRoot: true, readOnlyRootFilesystem: true}
           ports: [{containerPort: 8000}]
           resources:
             requests: {cpu: 250m, memory: 256Mi}
@@ -54,7 +57,7 @@ spec:
       resource: {name: cpu, target: {type: Utilization, averageUtilization: 60}}
 ```
 
-All eight services and the gateway are stateless and run as Deployments. The stateful parts (PostgreSQL, MongoDB, Redis and RabbitMQ) stay outside the cluster as managed services, such as Amazon RDS with a standby in a second zone, so the team does not operate databases on Kubernetes in its first year.
+All eight services and the gateway are stateless and run as Deployments. The stateful parts (PostgreSQL, MongoDB, Redis and RabbitMQ) stay outside the cluster as managed services, such as Amazon RDS with a standby in a second zone, so the team runs no database StatefulSets in its first year.
 
 Because nobody has run Kubernetes in production, the risk is reduced in steps: a managed control plane (Amazon EKS) in an EU region; all cluster configuration in Git, applied by Argo CD; training for the operations staff and one developer per team; an external specialist for set-up and the first three months of on-call; and Notification as the first service in production, because its failure does the least harm.
 
@@ -99,4 +102,4 @@ Detection takes minutes instead of waiting for complaints, and the failure costs
 
 A service mesh places a sidecar proxy (Envoy, in Istio) next to every pod, so all traffic between services passes through proxies that are configured centrally (Istio, n.d.). It adds fault tolerance without code changes: **mutual TLS** encrypts and authenticates every call; **retries** (with a budget) and **timeouts** are set per route; **circuit breaking** ejects failing instances; and **traffic shifting** sends, for example, 10% of calls to a new version, which is how canary releases are routed.
 
-MaltaShop should **not adopt a mesh now**, but build resilience into the services and the gateway first. Most traffic between services goes asynchronously through RabbitMQ, which a mesh does not manage. The few synchronous calls (gateway to services, Payment to its providers) are protected by timeouts, retries with idempotency keys and circuit breakers (Nygard, 2018), and Argo Rollouts already handles canary traffic. A mesh would add a proxy to every pod, more memory and a complex control plane for two operations staff who are still learning Kubernetes. Revisit this after twelve months, or sooner if synchronous calls multiply or an auditor requires encryption inside the cluster; Linkerd or Istio's sidecar-free ambient mode would then be the lighter options.
+MaltaShop should **not adopt a mesh now**, but build resilience into the services and the gateway first. Most traffic between services goes asynchronously through RabbitMQ, which a mesh does not manage. The few synchronous calls (gateway to services, Payment to its providers) are protected by timeouts, retries with idempotency keys and circuit breakers (Nygard, 2018), and Argo Rollouts already splits canary traffic at the ingress controller. A mesh would add a proxy to every pod, more memory and a complex control plane for two operations staff who are still learning Kubernetes. Revisit this after twelve months, or sooner if an auditor requires encryption inside the cluster; Linkerd would then be the lighter option.

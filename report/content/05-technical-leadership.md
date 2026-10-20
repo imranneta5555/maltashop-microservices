@@ -17,13 +17,13 @@
 
 **The CFO's concern.** It is right: this approach is overkill for small companies that rewrite everything into hundreds of parts. We will not do that. We split off only the parts causing our problems, one at a time, while the current shop keeps running. After the first part (e-mails, about three months) the board reviews the results and can stop with little lost.
 
-**Risks.** The team must learn new tools, so we pay for training and help. For a while we pay for old and new systems together. More parts mean more to watch, so monitoring comes first.
+**Risks.** The team must learn new tools, so we pay for training and help. For a while we pay for old and new systems together, and other new features come more slowly. More parts mean more to watch, so monitoring comes first.
 
 **Keeping the current system** costs less this year, but cannot meet next year's goals.
 
 ## 5.2 Organising the developers and operations staff
 
-The twelve developers become three stream-aligned teams of four, each owning whole business capabilities, and the two operations staff become a small platform team (Skelton and Pais, 2019):
+Before the first service is extracted, the twelve developers become three stream-aligned teams of four, each owning whole business capabilities, and the two operations staff become a small platform team (Skelton and Pais, 2019):
 
 - **Checkout team:** Order, Payment and Inventory.
 - **Storefront team:** Catalogue, Customer, and Recommendation, built with the data team.
@@ -34,7 +34,7 @@ The twelve developers become three stream-aligned teams of four, each owning who
 
 **Git workflow and code review.** Trunk-based development with pull requests; one approval from the owning team and a green pipeline before merging; a change to another team's service is reviewed by that team.
 
-**API contracts.** REST APIs are described in OpenAPI and events in JSON Schema, stored with the code. A breaking change needs a new version and the old one is kept for at least one release cycle; contract tests enforce this (Section 3.2).
+**API contracts.** REST APIs are described in OpenAPI and events in JSON Schema, stored with the code. A breaking change needs a new version and the old one is kept for at least six months; contract tests enforce this (Section 3.2).
 
 **Shared documentation.** Each repository has a README, runbooks and Architecture Decision Records, linked from the service catalogue.
 
@@ -81,4 +81,4 @@ Table: Table 14 — ADR-002: alternatives rejected
 
 **Consequences.** There is nothing to operate, and OpenTelemetry lets the backend change without touching service code. The bill grows with log volume, so production logs exclude DEBUG, are kept 30 days, and only 10% of normal traces are stored (all error traces are kept). *Technical debt accepted:* dashboards and alerts are first built by hand and must later move into code (Terraform) to be reviewed and versioned like the services.
 
-**Effect on the project.** Both decisions favour tools the team can run now over the most powerful option, which raises the chance of meeting the 12-month goals: MaltaShop's scarcest resource is operations time, not technology. The debt is deliberate and written down, so future teams know what was traded and when to revisit it, instead of discovering it during an incident.
+**Effect on the project.** Both decisions favour tools the team can run now over the most powerful option, which raises the chance of meeting the 12-month goals: MaltaShop's scarcest resource is operations time, not technology. The debt is written down, so future teams know what was traded and when to revisit it.

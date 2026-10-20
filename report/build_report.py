@@ -56,13 +56,9 @@ COVER_WIDTH_CM = 21.0 - 2 * COVER_MARGIN_CM
 TEXT_WIDTH_CM = 21.0 - 2 * MARGIN_CM
 DESIGN_WIDTH = 880          # width, in SVG units, that the diagrams were drawn at
 
-APPENDIX_SOURCES = [
-    ("B.1 docker-compose.yml", "docker-compose.yml"),
-    ("B.2 order-service/app/main.py", "order-service/app/main.py"),
-    ("B.3 order-service/app/db.py", "order-service/app/db.py"),
-    ("B.4 order-service/app/outbox.py", "order-service/app/outbox.py"),
-    ("B.5 notification-service/app/consumer.py", "notification-service/app/consumer.py"),
-]
+APPENDIX_COMPOSE = "docker-compose.yml"
+# Headings that start a new page; the other sections follow on, to keep the report short.
+NEW_PAGE_HEADINGS = ("1. ", "References", "Appendix")
 
 
 # ============================================================ Markdown model
@@ -337,7 +333,7 @@ def setup_document() -> Document:
     normal.paragraph_format.space_after = Pt(6)
     normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
-    for level, size, before, after in ((1, 16, 0, 12), (2, 14, 12, 6), (3, 12, 10, 4)):
+    for level, size, before, after in ((1, 16, 18, 12), (2, 14, 12, 6), (3, 12, 10, 4)):
         style = styles[f"Heading {level}"]
         configure_style(style, BODY_FONT, size, bold=True, italic=False)
         pf = style.paragraph_format
@@ -346,7 +342,7 @@ def setup_document() -> Document:
         pf.line_spacing = 1.5
         pf.keep_with_next = True
         pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        pf.page_break_before = level == 1
+        pf.page_break_before = False
 
     caption = styles["Caption"]
     configure_style(caption, BODY_FONT, 12, bold=False, italic=True)
@@ -620,6 +616,8 @@ def write_blocks(doc, blocks: list[Block], bookmarks: dict[str, str], counter: l
         if block.kind in ("h1", "h2", "h3"):
             level = int(block.kind[1])
             paragraph = doc.add_paragraph(style=f"Heading {level}")
+            if level == 1 and block.text.startswith(NEW_PAGE_HEADINGS):
+                paragraph.paragraph_format.page_break_before = True
             write_inline(paragraph, block.text, size={1: 16, 2: 14, 3: 12}[level])
             for run in paragraph.runs:
                 run.bold = True
@@ -850,12 +848,11 @@ def appendix_blocks() -> list[Block]:
               Block("paragraph", "The commit history below, oldest first, shows the prototype being built step "
                                  "by step (it was taken when this report was built)."),
               Block("listing", commit_history()),
-              Block("h1", "Appendix B: Prototype Source Code"),
-              Block("paragraph", "The Compose file and the source files quoted in Section 6.1, in full. The "
-                                 "Dockerfile and the CI workflow are in Listings 7 and 2.")]
-    for title, path in APPENDIX_SOURCES:
-        blocks.append(Block("h2", title))
-        blocks.append(Block("listing", (WORK / path).read_text(encoding="utf-8").rstrip("\n"), target=path))
+              Block("h1", "Appendix B: Docker Compose File"),
+              Block("paragraph", "The full `docker-compose.yml` quoted in Listing 8. The Dockerfile and the CI "
+                                 "workflow are in Listings 7 and 2; all other source code is in the repository."),
+              Block("listing", (WORK / APPENDIX_COMPOSE).read_text(encoding="utf-8").rstrip("\n"),
+                    target=APPENDIX_COMPOSE)]
     return blocks
 
 
